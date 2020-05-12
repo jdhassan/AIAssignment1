@@ -24,6 +24,8 @@ def read_puzzle():
                 except ValueError:
                     sys.exit("Found unexpected non-integer for tile value")
         row += 1
+    #added a print to see what each state looked like
+    print(new_puzzle.__str__())
     return new_puzzle
 
 # Class containing an int array for tiles
@@ -150,7 +152,12 @@ class NumberPuzzle:
     # Count tiles out of place.
     def tile_mismatch_heuristic(self):
         mismatch_count = 0
-        # TODO
+        should_be = 1
+        for i in range(PUZZLE_WIDTH):
+            for j in range(PUZZLE_WIDTH):
+                if self.tiles[i][j] != should_be:
+                    mismatch_count+=1
+                should_be = (should_be + 1) % (PUZZLE_WIDTH ** 2)
         return mismatch_count
 
     # Returns total manhattan (city block) distance needed for all tiles.  
