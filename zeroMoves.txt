@@ -1,4 +1,8 @@
-1 2 3 4
-5 6 7 8
-9 10 11 12
-13 14 15 -
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>URL</key>
+	<string>https://northeastern.blackboard.com/bbcswebdav/pid-22691914-dt-content-rid-74819284_1/xid-74819284_1</string>
+</dict>
+</plist>
