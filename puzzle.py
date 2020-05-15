@@ -1,7 +1,7 @@
 import sys
 import copy
 import numpy as np
-from Queue import PriorityQueue
+from queue import PriorityQueue
 
 PUZZLE_WIDTH = 4
 BLANK = 0  # Integer comparison tends to be faster than string comparison
@@ -40,6 +40,7 @@ class NumberPuzzle:
         # -- remember which puzzle was the move before
         self.parent = None
         self.dist_from_start = 0
+        self.key = 0
 
     # This is the Python equivalent of Java's toString()
     def __str__(self):
@@ -127,9 +128,52 @@ class NumberPuzzle:
     # solve: return a list of puzzle states from this state to solved
     # better_h flag determines whether to use the better heuristic
     def solve(self, better_h):
+        #heuristic flag
+        self.key = self.heuristic(better_h) + self.dist_from_start
         # TODO
+        #initialize priority queue; each node = cost to get there + estimated cost to go
+        queue = PriorityQueue()
+        queue.put(self.copy())
+        #intitalize table of distances
+        #initialize set with already seen, possibly add current to that set
+        #initialize table of distances to each node
+        seen = set()
+        #seen.add(queue[0].)
+        while queue.qsize() > 0:
+            n = queue.get()
+            #remove lowest-cost node N
+            if n.solved():
+                #return path to n
+                return n.find_path()
+            #if n in seen or we know as-good distance -> continue
+            if n in seen:
+                continue
+            for state in seen:
+                if n.__lt__(state):
+                    continue
+            #record cost to get here in table of distances
+            #For each neighbor of this node (all possible moves)
+                #Add to priority queue with appropriate cost to get there + heuristic
+                #Remember N is our parent
+            seen.add(n)
+            for state in n.legal_moves():
+                s = state.copy()
+                s.dist_from_start += 1
+                s.parent = n
+                s.key = s.heuristic(better_h) + s.dist_from_start
+                queue.put(s)
+        #return no path (if priority queue is empty w/o path to goal)
         return None
-    
+
+
+    def find_path(self):
+        path = []
+        n = self.copy()
+        while n.parent:
+            path.append(n)
+            n = n.parent
+        return path
+
     # solved(): return True iff all tiles in order and blank in bottom right
     def solved(self):
         should_be = 1
@@ -150,13 +194,22 @@ class NumberPuzzle:
     # Count tiles out of place.
     def tile_mismatch_heuristic(self):
         mismatch_count = 0
-        # TODO
+        should_be = 1
+        for i in range(PUZZLE_WIDTH):
+            for j in range(PUZZLE_WIDTH):
+                if self.tiles[i][j] != should_be:
+                    mismatch_count+=1
+                should_be = (should_be + 1) % (PUZZLE_WIDTH ** 2)
         return mismatch_count
 
     # Returns total manhattan (city block) distance needed for all tiles.  
     def manhattan_heuristic(self):
         total_manhattan = 0
-        # TODO
+        for i in range(PUZZLE_WIDTH):
+            for j in range(PUZZLE_WIDTH):
+                if self.tiles[i][j] != '-':
+                    x, y = divmod(self.tiles[i][j]-1, PUZZLE_WIDTH)
+                    total_manhattan += abs(x - i) + abs(y - j)
         return total_manhattan
 
 # Print every puzzle in the list
